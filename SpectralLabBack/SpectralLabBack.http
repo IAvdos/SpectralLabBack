@@ -1,0 +1,6 @@
+@SpectralLabBack_HostAddress = http://localhost:5162
+
+GET {{SpectralLabBack_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
