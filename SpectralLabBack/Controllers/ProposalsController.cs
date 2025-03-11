@@ -8,31 +8,77 @@ namespace SpectralLabBack.Controllers
 	[Route("[controller]")]
 	public class ProposalsController : ControllerBase
 	{
-		private readonly ProposalsRepository _dbRepository;
+		private readonly ProposalsRepository _proposalRepository;
 
 		public ProposalsController(ProposalsRepository proposalsRepository)
 		{
-			_dbRepository = proposalsRepository;
+			_proposalRepository = proposalsRepository;
 		}
 
 		[HttpGet("[action]")]
 		public async Task<ActionResult<List<Proposal>>> GetAll()
 		{
-			return await _dbRepository.GetProposals();
+			return await _proposalRepository.GetProposals();
 		}
 
 
 		[HttpPost("[action]")]
 		public async Task<ActionResult<Guid>> Create([FromBody] NewProposalRequest newProposal)
 		{
-			var result = await _dbRepository.CreateAsync(newProposal);
+			var proposal = new Proposal
+				(
+					Guid.NewGuid(),
+					newProposal.Laboratory,
+					newProposal.ProposalYearFor,
+					newProposal.CreateDate,
+					newProposal.IsFinal,
+					newProposal.SparesCount.Select(proposal =>
+						new ProposalSpareCount
+						(
+							Guid.NewGuid(),
+							proposal.Count,
+							proposal.ReceivedCount,
+							proposal.SpareId
+						)).ToList()
+				);
+
+			var result = await _proposalRepository.CreateAsync(proposal);
+
 			return Ok(result);
 		}
 
-		[HttpDelete("[action]")]
+		[HttpDelete("[action]/{id:guid}")]
 		public async Task<ActionResult<Guid>> Delete(Guid id)
 		{
-			return await _dbRepository.RemoveAsync(id);
+			return await _proposalRepository.RemoveAsync(id);
+		}
+
+		[HttpPut("[action]")]
+		public async Task<ActionResult<Guid>> Update([FromBody] ProposalRequest proposalRequest)
+		{
+			var updatedProposal = new Proposal
+				(
+					proposalRequest.Id,
+					proposalRequest.Laboratory,
+					proposalRequest.ProposalYearFor,
+					proposalRequest.CreateDate,
+					proposalRequest.IsFinal,
+					proposalRequest.SparesCount.Select(s => new ProposalSpareCount(
+						s.Id,
+						s.Count,
+						s.ReceivedCount,
+						s.SpareId
+						)).ToList()
+				);
+
+			var result = await _proposalRepository.UpdateProposalAsync(updatedProposal);
+
+			if (result == Guid.Empty)
+			{
+				return BadRequest("Wrong proposal ID");
+			}
+
+			return Ok(result);
 		}
 	}
 }

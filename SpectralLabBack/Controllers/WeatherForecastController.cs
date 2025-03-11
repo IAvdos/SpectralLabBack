@@ -33,13 +33,6 @@ namespace SpectralLabBack.Controllers
             })
             .ToArray();
         }
-        
-        [HttpPost(Name = "CreateSpare")]
-		public Guid Post(NewSpareRequest spare)
-		{
-            var result = _repository.Create(spare).Result;
-            return result;
-		}
     }
 	
 }

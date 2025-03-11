@@ -1,6 +1,6 @@
-﻿public class Proposal : IProposal
+﻿public class ProposalRequest
 {
-	public Proposal(Guid id, string laboratory, int proposalYearFor, DateOnly createDate, bool isFinal, List<ProposalSpareCount> sparesCount)
+	public ProposalRequest(Guid id, string laboratory, int proposalYearFor, DateOnly createDate, bool isFinal, List<ProposalSpareCountRequest> sparesCount)
 	{
 		Id = id;
 		Laboratory = laboratory;
@@ -16,5 +16,5 @@
 	public DateOnly CreateDate { get; }
 	public bool IsFinal { get; }
 
-	public List<ProposalSpareCount> SparesCount { get; }
+	public List<ProposalSpareCountRequest> SparesCount { get; }
 }

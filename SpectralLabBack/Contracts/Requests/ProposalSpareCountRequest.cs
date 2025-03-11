@@ -1,6 +1,6 @@
-﻿public class ProposalSpareCount
+﻿public class ProposalSpareCountRequest
 {
-	public ProposalSpareCount(Guid id, int count, int receivedCount, Guid spareId)
+	public ProposalSpareCountRequest(Guid id, int count, int receivedCount, Guid spareId)
 	{
 		Id = id;
 		Count = count;

@@ -25,14 +25,16 @@ namespace SpectralLabBack.Controllers
 		[HttpPost("[action]")]
 		public async Task<ActionResult<Guid>> Add(NewSpareRequest request)
 		{
-			var validationResult = _validator.ValidateNewSpare(request);
+			var spare = new Spare(Guid.NewGuid(), request.Name, request.Equipment, request.CatalogName, request.OzmId);
+
+			var validationResult = _validator.ValidateNewSpare(spare);
 
 			if(validationResult.Item1 == false)
 			{
 				return BadRequest(validationResult.Item2);
 			}
 
-			var responce = await _repository.Create(request);
+			var responce = await _repository.Create(spare);
 
 			return Ok(responce);
 		}

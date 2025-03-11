@@ -3,7 +3,7 @@ using Azure.Core;
 
 public class RequestValidator
 {
-	public (bool, string) ValidateNewSpare(NewSpareRequest request)
+	public (bool, string) ValidateNewSpare(Spare request)
 	{
 		bool isValid = true;
 		string errorMassage = String.Empty;

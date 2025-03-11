@@ -1,32 +1,19 @@
-﻿public class ProposalsRepository
+﻿using Microsoft.Extensions.Logging;
+
+public class ProposalsRepository
 {
 	private readonly DbProposalsRepository _dbRepository;
+	private readonly ILogger<ProposalsRepository> _loger;
 
-	public ProposalsRepository(DbProposalsRepository dbRepository)
+	public ProposalsRepository(DbProposalsRepository dbRepository, ILogger<ProposalsRepository> loger)
 	{
 		_dbRepository = dbRepository;
+		_loger = loger;
 	}
 
-	public async Task<Guid> CreateAsync(NewProposalRequest requestProposal)
+	public async Task<Guid> CreateAsync(Proposal requestProposal)
 	{
-		var newProsal = new Proposal
-			(
-				new Guid(),
-				requestProposal.Laboratory,
-				requestProposal.ProposalYearFor,
-				requestProposal.CreateDate,
-				requestProposal.IsFinal,
-				requestProposal.SparesCount.Select(proposal =>
-					new ProposalSpareCount
-					(
-						new Guid(),
-						proposal.Count,
-						proposal.ReceivedCount,
-						proposal.SpareId
-					)).ToList()
-			);
-
-		return await _dbRepository.CreateAsync( newProsal );
+		return await _dbRepository.CreateAsync(requestProposal);
 	}
 
 	public async Task<Guid> RemoveAsync( Guid proposalId)
@@ -36,6 +23,11 @@
 
 	public async Task<List<Proposal>> GetProposals()
 	{
-		return await _dbRepository.Get();
+		return await _dbRepository.GetAsync();
+	}
+
+	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
+	{
+		return await _dbRepository.UpdateAsync(proposal);
 	}
 }

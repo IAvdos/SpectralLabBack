@@ -10,9 +10,9 @@ public class DbProposalsRepository
 		_context = context;
 	}
 
-	public async Task<List<Proposal>> Get()
+	public async Task<List<Proposal>> GetAsync()
 	{
-		var proposals =  _context.Proposals.ToList();
+		var proposals = await _context.Proposals.Include( p => p.ProposalSparesCount).ToListAsync();
 
 		return proposals.Select(p =>
 			new Proposal(
@@ -33,28 +33,12 @@ public class DbProposalsRepository
 
 	public async Task<Guid> CreateAsync(Proposal proposal)
 	{
-		var newProposal = new DbProposal
-		{
-			Id = proposal.Id,
-			Laboratory = proposal.Laboratory,
-			ProposalYearFor = proposal.ProposalYearFor,
-			CreateDate = proposal.CreateDate,
-			IsFinal = proposal.IsFinal,
-			ProposalSparesCount = proposal.SparesCount.Select(p => new DbProposalSpareCount
-			{
-				Id = new Guid(),
-				Count = p.Count,
-				ReceivedCount = p.ReceivedCount,
-				ProposalId = proposal.Id,
-				SpareId = p.SpareId
-			}
-			).ToList()
-		};
+		var newProposal = ToDbProposal(proposal);
 
 		await _context.Proposals.AddAsync(newProposal);
 		await _context.SaveChangesAsync();
 
-		return proposal.Id;
+		return newProposal.Id;
 	}
 
 	public async Task<Guid> RemoveAsync(Guid proposalId)
@@ -68,5 +52,72 @@ public class DbProposalsRepository
 		return proposal.Id;
 	}
 
+	public async Task<Guid> UpdateAsync(Proposal newDataProposal)
+	{
+		var dbNewDataProposal = ToDbProposal(newDataProposal);
+		var updatedProposal = await _context.Proposals.FindAsync(newDataProposal.Id);
+
+		//var updatedProposal = proposals.First(p => p.Id == newDataProposal.Id);
+
+		if (updatedProposal != null)
+		{
+			updatedProposal.CreateDate = dbNewDataProposal.CreateDate;
+			updatedProposal.IsFinal = dbNewDataProposal.IsFinal;
+			updatedProposal.Laboratory = dbNewDataProposal.Laboratory;
+			updatedProposal.ProposalYearFor = dbNewDataProposal.ProposalYearFor;
+			updatedProposal.ProposalSparesCount = dbNewDataProposal.ProposalSparesCount;
+			_context.Proposals.Update(updatedProposal);
+
+			_context.SaveChanges();
+
+			return updatedProposal.Id;
+		}
+
+		return new Guid();
+	}
+
+	private DbProposal ToDbProposal(Proposal convertedProposal)
+	{
+		return new DbProposal
+			{
+				Id = convertedProposal.Id,
+				Laboratory = convertedProposal.Laboratory,
+				ProposalYearFor = convertedProposal.ProposalYearFor,
+				CreateDate = convertedProposal.CreateDate,
+				IsFinal = convertedProposal.IsFinal,
+				ProposalSparesCount = convertedProposal.SparesCount.Select(p => new DbProposalSpareCount
+				{
+					Id = new Guid(),
+					Count = p.Count,
+					ReceivedCount = p.ReceivedCount,
+					ProposalId = convertedProposal.Id,
+					SpareId = p.SpareId
+				}
+				).ToList()
+			};
+	}
+
 
 }
+
+
+/*
+	public async Task<Guid> UpdateAsync(Proposal newDataProposal)
+	{
+		var proposals = await _context.Proposals.Include(p => p.ProposalSparesCount).ToListAsync();
+
+		var updatedProposal = proposals.First(p => p.Id == newDataProposal.Id);
+
+		if (updatedProposal != null)
+		{
+			var proposal = ToDbProposal(newDataProposal);
+			updatedProposal = proposal;
+
+			_context.SaveChanges();
+
+			return updatedProposal.Id;
+		}
+
+		return new Guid();
+	}
+*/
