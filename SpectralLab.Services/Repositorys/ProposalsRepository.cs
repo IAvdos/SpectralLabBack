@@ -2,32 +2,34 @@
 
 public class ProposalsRepository
 {
-	private readonly DbProposalsRepository _dbRepository;
+	private readonly DbProposalsRepository _dbProposalRepository;
+	private readonly DbProposalSparesRepository _dbProposalSparesRepository;
 	private readonly ILogger<ProposalsRepository> _loger;
 
-	public ProposalsRepository(DbProposalsRepository dbRepository, ILogger<ProposalsRepository> loger)
+	public ProposalsRepository(DbProposalsRepository dbproposalRepository, DbProposalSparesRepository dbProposalSparesRepository, ILogger<ProposalsRepository> loger)
 	{
-		_dbRepository = dbRepository;
+		_dbProposalRepository = dbproposalRepository;
+		_dbProposalSparesRepository = dbProposalSparesRepository;
 		_loger = loger;
 	}
 
 	public async Task<Guid> CreateAsync(Proposal requestProposal)
 	{
-		return await _dbRepository.CreateAsync(requestProposal);
+		return await _dbProposalRepository.CreateAsync(requestProposal);
 	}
 
 	public async Task<Guid> RemoveAsync( Guid proposalId)
 	{
-		return await _dbRepository.RemoveAsync( proposalId );
+		return await _dbProposalRepository.RemoveAsync( proposalId );
 	}
 
 	public async Task<List<Proposal>> GetProposals()
 	{
-		return await _dbRepository.GetAsync();
+		return await _dbProposalRepository.GetAsync();
 	}
 
 	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
 	{
-		return await _dbRepository.UpdateAsync(proposal);
+		return await _dbProposalRepository.UpdateAsync(proposal);
 	}
 }
