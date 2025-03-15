@@ -8,34 +8,35 @@ public class DbProposalSparesRepository
 	{
 		_context = context;
 	}
-	public async void UpdateListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
+
+	public async Task UpdateListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
 	{
 		var newProposalSpares = proposalSpares.Where( p => p.Id == Guid.Empty ).ToList();
-		AddListAsync(newProposalSpares, proposalId);
+		await AddListAsync(newProposalSpares, proposalId);
 
-		var proposalSparesInDb = _context.ProposalsSpareCount.Where(p => p.Id == proposalId);
-		IQueryable<DbProposalSpareCount> updatedProposalSpares = null;
-		IQueryable<DbProposalSpareCount> removedProposalSpares = null;
+		var proposalSparesInDb = _context.ProposalsSpareCount.Where(p => p.ProposalId == proposalId).ToList();
+		//IQueryable<DbProposalSpareCount> updatedProposalSpares = null;
+		//IQueryable<DbProposalSpareCount> removedProposalSpares = null;
 
-		foreach(var spare in proposalSpares)
+		foreach(var spare in proposalSparesInDb)
 		{
-			var currentSpare = proposalSparesInDb.First( p => p.SpareId == spare.Id);
+			var currentSpare = proposalSpares.FirstOrDefault( p => p.SpareId == spare.SpareId);
 
-			if (currentSpare != null)
+			if (currentSpare == null)
 			{
-				_context.ProposalsSpareCount.Remove(currentSpare);
+				_context.ProposalsSpareCount.Remove(spare);
 			}
 			else
 			{
-				currentSpare.Count = spare.Count;
-				currentSpare.ReceivedCount = spare.ReceivedCount;
+				spare.Count = currentSpare.Count;
+				spare.ReceivedCount = currentSpare.ReceivedCount;
 			}
 		}
 
 		await _context.SaveChangesAsync();
 	}
 
-	public async void AddListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
+	public async Task AddListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
 	{
 		var dbProposalSpares = proposalSpares.Select(p => new DbProposalSpareCount
 		{
@@ -49,10 +50,5 @@ public class DbProposalSparesRepository
 		await _context.ProposalsSpareCount.AddRangeAsync(dbProposalSpares);
 
 		_context.SaveChanges();
-	}
-
-	public async void RemoveListAsync(List<ProposalSpareCount> proposalSpares)
-	{
-
 	}
 }

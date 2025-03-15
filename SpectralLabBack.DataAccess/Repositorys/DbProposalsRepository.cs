@@ -65,8 +65,7 @@ public class DbProposalsRepository
 			updatedProposal.IsFinal = dbNewDataProposal.IsFinal;
 			updatedProposal.Laboratory = dbNewDataProposal.Laboratory;
 			updatedProposal.ProposalYearFor = dbNewDataProposal.ProposalYearFor;
-			updatedProposal.ProposalSparesCount = dbNewDataProposal.ProposalSparesCount;
-			_context.Proposals.Update(updatedProposal);
+			//updatedProposal.ProposalSparesCount = dbNewDataProposal.ProposalSparesCount;
 
 			_context.SaveChanges();
 

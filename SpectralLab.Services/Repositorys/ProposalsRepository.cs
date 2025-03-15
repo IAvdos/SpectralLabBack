@@ -30,6 +30,15 @@ public class ProposalsRepository
 
 	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
 	{
-		return await _dbProposalRepository.UpdateAsync(proposal);
+		var proposalSpares = proposal.SparesCount;
+
+		var result = await _dbProposalRepository.UpdateAsync(proposal);
+
+		if (result != Guid.Empty)
+		{
+			await _dbProposalSparesRepository.UpdateListAsync(proposalSpares, result);
+		}
+		
+		return result;
 	}
 }
