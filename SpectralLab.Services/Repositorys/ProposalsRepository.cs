@@ -4,13 +4,13 @@ public class ProposalsRepository
 {
 	private readonly DbProposalsRepository _dbProposalRepository;
 	private readonly DbProposalSparesRepository _dbProposalSparesRepository;
-	private readonly ILogger<ProposalsRepository> _loger;
+	private readonly DbSpareStorageRepositiry _dbSparesStorageRepository;
 
-	public ProposalsRepository(DbProposalsRepository dbproposalRepository, DbProposalSparesRepository dbProposalSparesRepository, ILogger<ProposalsRepository> loger)
+	public ProposalsRepository(DbProposalsRepository dbproposalRepository, DbProposalSparesRepository dbProposalSparesRepository, DbSpareStorageRepositiry dbSpareStorageRepositiry)
 	{
 		_dbProposalRepository = dbproposalRepository;
 		_dbProposalSparesRepository = dbProposalSparesRepository;
-		_loger = loger;
+		_dbSparesStorageRepository = dbSpareStorageRepositiry;
 	}
 
 	public async Task<Guid> CreateAsync(Proposal requestProposal)
@@ -28,6 +28,23 @@ public class ProposalsRepository
 		return await _dbProposalRepository.GetAsync();
 	}
 
+	public async Task<Guid> UpdateAsync(Proposal proposal)
+	{
+		var dbProposal = await _dbProposalRepository.FindAsync( proposal.Id );
+
+		if ( dbProposal == null )
+		{
+			return Guid.Empty;
+		}
+
+		if ( dbProposal.IsFinal )
+		{
+			UpateSparesStorageAsync(proposal.SparesCount);
+		}
+		
+		return await UpdateProposalAsync( proposal );
+	}
+
 	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
 	{
 		var proposalSpares = proposal.SparesCount;
@@ -40,5 +57,19 @@ public class ProposalsRepository
 		}
 		
 		return result;
+	}
+
+	private async Task UpateSparesStorageAsync(List<ProposalSpareCount> sparesCount, string laboratory)
+	{
+		var sparesStorage = sparesCount.Select( s => 
+			new SpareStorage
+				(
+					Guid.NewGuid(),
+					laboratory,
+					s.ReceivedCount,
+					s.SpareId
+				)).ToList();
+
+		_dbSparesStorageRepository.AddAsync(sparesStorage);
 	}
 }

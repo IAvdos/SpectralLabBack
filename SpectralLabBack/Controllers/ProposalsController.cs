@@ -47,11 +47,13 @@ namespace SpectralLabBack.Controllers
 			return Ok(result);
 		}
 
+
 		[HttpDelete("[action]/{id:guid}")]
 		public async Task<ActionResult<Guid>> Delete(Guid id)
 		{
 			return await _proposalRepository.RemoveAsync(id);
 		}
+
 
 		[HttpPut("[action]")]
 		public async Task<ActionResult<Guid>> Update([FromBody] ProposalRequest proposalRequest)

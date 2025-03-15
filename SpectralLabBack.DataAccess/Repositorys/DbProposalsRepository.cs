@@ -75,6 +75,13 @@ public class DbProposalsRepository
 		return new Guid();
 	}
 
+	public async Task<Proposal> FindAsync(Guid id)
+	{
+		var serchedProposal = await _context.Proposals.Include(p => p.ProposalSparesCount).FirstOrDefaultAsync(x => x.Id == id);
+
+		return ToProposal(serchedProposal);
+	}
+
 	private DbProposal ToDbProposal(Proposal convertedProposal)
 	{
 		return new DbProposal
@@ -94,6 +101,24 @@ public class DbProposalsRepository
 				}
 				).ToList()
 			};
+	}
+
+	private Proposal ToProposal(DbProposal convertedProposal)
+	{
+		return new Proposal(
+			convertedProposal.Id,
+			convertedProposal.Laboratory,
+			convertedProposal.ProposalYearFor,
+			convertedProposal.CreateDate,
+			convertedProposal.IsFinal,
+			convertedProposal.ProposalSparesCount.Select(s =>
+				new ProposalSpareCount(
+					s.Id,
+					s.Count,
+					s.ReceivedCount,
+					s.SpareId
+				)).ToList()
+			);
 	}
 
 
