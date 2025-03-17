@@ -9,10 +9,12 @@ namespace SpectralLabBack.Controllers
 	public class ProposalsController : ControllerBase
 	{
 		private readonly ProposalsRepository _proposalRepository;
+		private readonly ProposalManager _proposalManager;
 
-		public ProposalsController(ProposalsRepository proposalsRepository)
+		public ProposalsController(ProposalsRepository proposalsRepository, ProposalManager proposalManager)
 		{
 			_proposalRepository = proposalsRepository;
+			_proposalManager = proposalManager;
 		}
 
 		[HttpGet("[action]")]
@@ -73,7 +75,8 @@ namespace SpectralLabBack.Controllers
 						)).ToList()
 				);
 
-			var result = await _proposalRepository.UpdateProposalAsync(updatedProposal);
+			//var result = await _proposalRepository.UpdateProposalAsync(updatedProposal);
+			var result = await _proposalManager.UpdateAsync(updatedProposal);
 
 			if (result == Guid.Empty)
 			{

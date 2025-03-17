@@ -27,7 +27,23 @@ public class ProposalsRepository
 	{
 		return await _dbProposalRepository.GetAsync();
 	}
+	
+	
+	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
+	{
+		var proposalSpares = proposal.SparesCount;
 
+		var result = await _dbProposalRepository.UpdateAsync(proposal);
+
+		if (result != Guid.Empty)
+		{
+			await _dbProposalSparesRepository.UpdateListAsync(proposalSpares, result);
+		}
+		
+		return result;
+	}
+
+	/*
 	public async Task<Guid> UpdateAsync(Proposal proposal)
 	{
 		var dbProposal = await _dbProposalRepository.FindAsync( proposal.Id );
@@ -45,19 +61,7 @@ public class ProposalsRepository
 		return await UpdateProposalAsync( proposal );
 	}
 
-	public async Task<Guid> UpdateProposalAsync(Proposal proposal)
-	{
-		var proposalSpares = proposal.SparesCount;
 
-		var result = await _dbProposalRepository.UpdateAsync(proposal);
-
-		if (result != Guid.Empty)
-		{
-			await _dbProposalSparesRepository.UpdateListAsync(proposalSpares, result);
-		}
-		
-		return result;
-	}
 
 	private async Task UpateSparesStorageAsync(List<ProposalSpareCount> sparesCount, string laboratory)
 	{
@@ -72,4 +76,5 @@ public class ProposalsRepository
 
 		_dbSparesStorageRepository.AddAsync(sparesStorage);
 	}
+	*/
 }

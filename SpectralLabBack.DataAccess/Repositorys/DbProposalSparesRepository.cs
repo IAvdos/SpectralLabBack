@@ -1,4 +1,5 @@
-﻿using SpectralLabBack.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using SpectralLabBack.DataAccess;
 
 public class DbProposalSparesRepository
 {
@@ -8,6 +9,22 @@ public class DbProposalSparesRepository
 	{
 		_context = context;
 	}
+
+
+	public async Task<List<ProposalSpareCount>> GetAsync()
+	{
+		var spares = await _context.ProposalsSpareCount.ToListAsync();
+
+		return spares.Select( s => 
+			new ProposalSpareCount
+				(
+					s.Id,
+					s.Count,
+					s.ReceivedCount,
+					s.SpareId
+				)).ToList();
+	}
+
 
 	public async Task UpdateListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
 	{
@@ -35,6 +52,7 @@ public class DbProposalSparesRepository
 
 		await _context.SaveChangesAsync();
 	}
+
 
 	public async Task AddListAsync(List<ProposalSpareCount> proposalSpares, Guid proposalId)
 	{

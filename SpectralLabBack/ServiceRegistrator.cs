@@ -10,5 +10,6 @@
 		services.AddTransient<DbProposalSparesRepository>();
 		services.AddTransient<DbSpareStorageRepositiry>();
 		services.AddTransient<RequestValidator>();
+		services.AddTransient<ProposalManager>();
 	}
 }
