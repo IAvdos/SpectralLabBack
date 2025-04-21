@@ -16,11 +16,13 @@ namespace SpectralLabBack.Controllers
 			_validator = validator;
 		}
 
+
 		[HttpGet("[action]")]
 		public async Task<ActionResult<List<Spare>>> Get()
 		{
 			return await _repository.GetAll();
 		}
+
 
 		[HttpPost("[action]")]
 		public async Task<ActionResult<Guid>> Add(NewSpareRequest request)

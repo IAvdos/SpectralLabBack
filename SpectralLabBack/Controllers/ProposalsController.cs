@@ -17,10 +17,31 @@ namespace SpectralLabBack.Controllers
 			_proposalManager = proposalManager;
 		}
 
+
 		[HttpGet("[action]")]
 		public async Task<ActionResult<List<Proposal>>> GetAll()
 		{
-			return await _proposalRepository.GetProposals();
+			var proposals = await _proposalRepository.GetProposals();
+
+			var responseProposals = proposals.Select(p =>
+				new ProposalResponse
+				{
+					Id = p.Id,
+					Lab = p.Laboratory,
+					Date = p.CreateDate,
+					ProposalYear = p.ProposalYearFor,
+					Final = p.IsFinal,
+					Spares = p.SparesCount.Select(s =>
+						new ProposalSpareResponse
+						{
+							Cnt = s.Count,
+							Id = s.Id,
+							SpareId = s.SpareId,
+							ReceivedCnt = s.ReceivedCount
+						}).ToList()
+				});
+
+			return Ok(responseProposals);
 		}
 
 

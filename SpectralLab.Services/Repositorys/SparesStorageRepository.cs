@@ -21,4 +21,9 @@
 	{
 		return await _dbSparesStorageRepository.RemoveAsync(id);
 	}
+
+	public async Task<List<SpareStorage>> UpdateSpares(List<SpareStorage> storages)
+	{
+		return await _dbSparesStorageRepository.UpadateAsync(storages);
+	}
 }

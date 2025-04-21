@@ -9,7 +9,7 @@
 
 	public async Task<Guid> Create(Spare newSpare)
 	{
-		var spare = new Spare(Guid.NewGuid(), newSpare.Name, newSpare.Equipment, newSpare.CatalogName, newSpare.OzmId);
+		var spare = new Spare(newSpare.Id, newSpare.Name, newSpare.Equipment, newSpare.CatalogName, newSpare.OzmId);
 
 		var result = await _dbSparesRepository.Create(spare);
 

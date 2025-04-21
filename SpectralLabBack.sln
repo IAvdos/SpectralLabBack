@@ -14,6 +14,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectralLab.DomainModel", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectralLab.Services", "SpectralLab.Services\SpectralLab.Services.csproj", "{5E7E8D6F-62E9-4352-A653-06B0C52855FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectralLab.Tests", "SpectralLab.Tests\SpectralLab.Tests.csproj", "{66F06FC9-BA13-4E14-8642-C2787B2279CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C40BDD3-B734-4C89-AFB8-C21C65C666CF} = {0C40BDD3-B734-4C89-AFB8-C21C65C666CF}
+		{22AC5300-B319-4206-AF6A-1F83008C47E6} = {22AC5300-B319-4206-AF6A-1F83008C47E6}
+		{5E7E8D6F-62E9-4352-A653-06B0C52855FB} = {5E7E8D6F-62E9-4352-A653-06B0C52855FB}
+		{A680B147-24C6-4977-BAFA-71AD3081DDE8} = {A680B147-24C6-4977-BAFA-71AD3081DDE8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +44,10 @@ Global
 		{5E7E8D6F-62E9-4352-A653-06B0C52855FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E7E8D6F-62E9-4352-A653-06B0C52855FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E7E8D6F-62E9-4352-A653-06B0C52855FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F06FC9-BA13-4E14-8642-C2787B2279CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F06FC9-BA13-4E14-8642-C2787B2279CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F06FC9-BA13-4E14-8642-C2787B2279CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F06FC9-BA13-4E14-8642-C2787B2279CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

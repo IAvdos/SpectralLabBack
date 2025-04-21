@@ -27,16 +27,17 @@ public class DbSpareStorageRepositiry
 		await _dbContext.SparesStorage.AddRangeAsync(newDbSpares);
 		_dbContext.SaveChanges();
 
-		return conteinsSpares;
+		return newSpares;
 	}
 
 
-	public async Task UpadateAsync(List<SpareStorage> sparesStorage)
+	public async Task<List<SpareStorage>> UpadateAsync(List<SpareStorage> sparesStorage)
 	{
+		List<SpareStorage> updatedSpares = new();
 		var newSpares = sparesStorage.Where(p => p.Id == Guid.Empty).ToList();
 		var conteinsSpares = sparesStorage.Except(newSpares);
-		await AddAsync(newSpares);
-
+		//await AddAsync(newSpares);
+		
 		var sparesInDb = _dbContext.SparesStorage.ToList();
 
 		foreach (var spare in conteinsSpares)
@@ -46,10 +47,13 @@ public class DbSpareStorageRepositiry
 			if (currentSpare != null)
 			{
 				currentSpare.AvailableCount = spare.AvailableCount;
+				updatedSpares.Add(spare);
 			}
 		}
 
 		await _dbContext.SaveChangesAsync();
+
+		return updatedSpares;
 	}
 
 	public async Task<Guid> RemoveAsync(Guid id)

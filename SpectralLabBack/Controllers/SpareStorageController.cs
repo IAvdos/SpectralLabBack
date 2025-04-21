@@ -14,22 +14,35 @@ namespace SpectralLabBack.Controllers
 		}
 
 		[HttpPost("[action]")]
-		public async Task<ActionResult<AddSpareStorageResponse>> Create([FromBody] List<SpareStorageRequest> newSpares)
+		public async Task<ActionResult<SpareStorageResponse>> Create([FromBody] List<SpareStorageRequest> newSpares)
 		{
 			var spares = newSpares.Select( s  => new SpareStorage(Guid.NewGuid(), s.Laboratory, s.AvailableCount, s.SpareId)).ToList();
 
-			var alreadyConteins = await _storageRepository.CreateSparesStorageAsync(spares);
+			var addedSpares = await _storageRepository.CreateSparesStorageAsync(spares);
 
-			var response = alreadyConteins.Select( x => new AddSpareStorageResponse(x.SpareId, x.Laboratory) ).ToList();
+			var response = addedSpares.Select( x => new SpareStorageResponse(x.Id,  x.Laboratory, x.AvailableCount,x.SpareId) ).ToList();
 
 			return Ok(response);
 		}
+
 
 		[HttpGet("[action]")]
 		public async Task<ActionResult<SpareStorage>> GetAllAsync()
 		{
 			return Ok(await _storageRepository.GetAllAsync());
 		}
+
+
+		[HttpPut("[action]")]
+		public async Task<ActionResult<SpareStorage>> UpdateAsync([FromBody] List<SpareStorageRequest> spares)
+		{
+			var updatedSpares = spares.Select(s => new SpareStorage(s.Id, s.Laboratory, s.AvailableCount, s.SpareId)).ToList();
+
+			var result = await _storageRepository.UpdateSpares(updatedSpares);
+
+			return Ok(result);
+		}
+
 
 		[HttpDelete("[action]/{id:guid}")]
 		public async Task<Guid> Remove(Guid id)
