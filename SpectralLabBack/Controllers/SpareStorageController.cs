@@ -8,10 +8,12 @@ namespace SpectralLabBack.Controllers
 	{
 		private readonly SparesStorageRepository _storageRepository;
 
+
 		public SpareStorageController(SparesStorageRepository storageRepository)
 		{
 			_storageRepository = storageRepository;
 		}
+
 
 		[HttpPost("[action]")]
 		public async Task<ActionResult<SpareStorageResponse>> Create([FromBody] List<SpareStorageRequest> newSpares)
@@ -26,10 +28,10 @@ namespace SpectralLabBack.Controllers
 		}
 
 
-		[HttpGet("[action]")]
-		public async Task<ActionResult<SpareStorage>> GetAllAsync()
+		[HttpPost("[action]")]
+		public async Task<ActionResult<List<AvailableSpare>>> GetAllAsync([FromBody] AvailableSpareStorage filter)
 		{
-			return Ok(await _storageRepository.GetAllAsync());
+			return Ok(await _storageRepository.GetWithSpare());
 		}
 
 

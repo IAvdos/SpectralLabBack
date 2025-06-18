@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Azure.Core;
 
 public class RequestValidator
 {
@@ -13,21 +12,23 @@ public class RequestValidator
 		if (!nameRegex.IsMatch(request.Name))
 		{
 			isValid = false;
-			errorMassage = "Spare name is not valid ";
+			errorMassage = "Spare name is not valid. ";
 		}
 
 		var equipmentRegex = new Regex(SparePropertysExpression.equipmentPattern);
+
 		if (!equipmentRegex.IsMatch(request.Equipment))
 		{
 			isValid = false;
-			errorMassage += "Spere equipment name is not valid ";
+			errorMassage += "Spere equipment name is not valid. ";
 		}
 
 		var ozmIdRegex = new Regex(SparePropertysExpression.ozmIdPattern);
+
 		if (!equipmentRegex.IsMatch(request.OzmId.ToString()))
 		{
 			isValid = false;
-			errorMassage += "Spere ozm id is not valid ";
+			errorMassage += "Spere ozm id is not valid.";
 		}
 
 		return (isValid, errorMassage);

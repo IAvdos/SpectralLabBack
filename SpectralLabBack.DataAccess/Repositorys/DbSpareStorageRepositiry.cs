@@ -14,7 +14,27 @@ public class DbSpareStorageRepositiry
 	{
 		var spares = await _dbContext.SparesStorage.ToListAsync();
 
-		return spares.Select( s => new SpareStorage(s.Id, s.Laboratory, s.AvailableCount, s.SpareId)).ToList();
+		return spares.Select( s => new SpareStorage(
+			s.Id,
+			s.Laboratory,
+			s.AvailableCount,
+			s.SpareId)).ToList();
+	}
+
+
+	public async Task<List<AvailableSpare>> GetWithSpare()
+	{
+		var spares = await _dbContext.SparesStorage.Include(s => s.Spare).ToListAsync();
+
+		return spares.Select(s => new AvailableSpare(
+			s.Id,
+			s.Laboratory,
+			s.AvailableCount,
+			s.SpareId,
+			s.Spare.Name,
+			s.Spare.Equipment,
+			s.Spare.CatalogName,
+			s.Spare.OzmId)).ToList();
 	}
 
 	public async Task<List<SpareStorage>> AddAsync(List<SpareStorage> sparesStorage)
